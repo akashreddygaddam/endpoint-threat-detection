@@ -1,0 +1,25 @@
+### Splunk Detection Searches - Endpoint Threat Detection Lab
+### Data source: index=sysmon (Sysmon events forwarded via Splunk Universal Forwarder from win-victim)
+
+# --- T1059.001 - Encoded PowerShell ---
+index=sysmon EventCode=1 CommandLine=*EncodedCommand*
+
+# --- T1547.001 - Registry Run Key Persistence ---
+index=sysmon EventCode=13 TargetObject=*CurrentVersion\Run*
+
+# --- T1218 - Signed Binary Proxy Execution (LOLBins) ---
+index=sysmon EventCode=1 (Image=*regsvr32.exe* OR Image=*rundll32.exe* OR Image=*mshta.exe* OR Image=*certutil.exe*)
+
+# --- T1003.001 - LSASS Memory Access ---
+index=sysmon EventCode=10 TargetImage=*lsass.exe*
+
+# --- T1071.001 - Suspicious Outbound / Application Layer Protocol ---
+index=sysmon EventCode=3
+| stats count by Image, DestinationIp, DestinationPort, DestinationHostname
+| sort - count
+
+# --- General: all Sysmon events by index/source, useful for pipeline health check ---
+index=* | stats count by index
+
+# --- General: confirm data landing under expected sourcetype ---
+index=* sourcetype=WinEventLog:Microsoft-Windows-Sysmon/Operational
