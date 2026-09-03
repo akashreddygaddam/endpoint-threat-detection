@@ -88,5 +88,19 @@ splunk-searches/detection-searches.spl
 
 docs/attack-simulation-log.md
 
-screenshots/
+
+
+\## Screenshots
+
+
+
+\- screenshots/01-troubleshooting-splunk-forwarding/ - full debugging arc for the Splunk forwarding issue, from initial port check through root cause (Access Denied on Sysmon WinEventLog subscription) to the fix and final successful ingestion of 14,405 events
+
+\- screenshots/02-technique-t1059-encoded-powershell/ - encoded PowerShell execution
+
+\- screenshots/03-technique-t1547-registry-persistence/ - registry Run key persistence test and Splunk detection
+
+\- screenshots/04-technique-t1218-t1003-defender-blocked/ - Windows Defender blocking the LOLBin and LSASS credential dumping attempts
+
+\- screenshots/05-technique-t1071-outbound-connection/ - suspicious outbound connection test with Splunk and Wazuh detection
 
