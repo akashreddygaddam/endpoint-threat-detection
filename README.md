@@ -21,6 +21,7 @@ Tools Used
 Overview
 A three-tier home-lab SOC environment built to practice endpoint detection engineering end-to-end: instrumenting a Windows victim host with Sysmon, forwarding telemetry into two independent detection stacks (Wazuh and Splunk), writing custom detection rules, and validating them against real MITRE ATT&CK-mapped attack simulations using Atomic Red Team.
 The goal was not just to stand up the tools, but to prove detection coverage by actually attacking the endpoint and confirming the alerts fire — including documenting the cases where they don't (Windows Defender intercepting two techniques before the SIEM layer ever saw them).
+
 Architecture
 ```mermaid
 flowchart TD
