@@ -1,5 +1,4 @@
 Endpoint Threat Detection Lab — Sysmon + Wazuh + Splunk
-
 ![Wazuh](https://img.shields.io/badge/Wazuh-v4.9.0-blue?style=flat-square)
 ![Splunk](https://img.shields.io/badge/Splunk-Enterprise-black?style=flat-square&logo=splunk&logoColor=white)
 ![Sysmon](https://img.shields.io/badge/Sysmon-SwiftOnSecurity-orange?style=flat-square)
@@ -21,7 +20,12 @@ Tools Used
 Overview
 A three-tier home-lab SOC environment built to practice endpoint detection engineering end-to-end: instrumenting a Windows victim host with Sysmon, forwarding telemetry into two independent detection stacks (Wazuh and Splunk), writing custom detection rules, and validating them against real MITRE ATT&CK-mapped attack simulations using Atomic Red Team.
 The goal was not just to stand up the tools, but to prove detection coverage by actually attacking the endpoint and confirming the alerts fire — including documenting the cases where they don't (Windows Defender intercepting two techniques before the SIEM layer ever saw them).
-
+Demo
+(Optional: add a short GIF/clip here showing an alert firing live in Wazuh or Splunk — mirrors the Cowrie project's `demo.gif`. Not included yet — screen-record one detection firing and drop it in `screenshots/demo.gif`, then reference it below.)
+```markdown
+!\\\[Demo](screenshots/demo.gif)
+\\\*A simulated attack technique triggering a detection, captured live\\\*
+```
 Architecture
 ```mermaid
 flowchart TD
