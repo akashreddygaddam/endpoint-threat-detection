@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🛡️ Endpoint Threat Detection Lab
+# 🛡️ Endpoint Threat Detection
 ### Sysmon + Wazuh + Splunk
 
 ![Wazuh](https://img.shields.io/badge/Wazuh-v4.9.0-blue?style=flat-square)
