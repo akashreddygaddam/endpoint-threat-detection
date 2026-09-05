@@ -1,6 +1,4 @@
 Endpoint Threat Detection Lab — Sysmon + Wazuh + Splunk
-
-
 ![Wazuh](https://img.shields.io/badge/Wazuh-v4.9.0-blue?style=flat-square)
 ![Splunk](https://img.shields.io/badge/Splunk-Enterprise-black?style=flat-square&logo=splunk&logoColor=white)
 ![Sysmon](https://img.shields.io/badge/Sysmon-SwiftOnSecurity-orange?style=flat-square)
@@ -25,19 +23,19 @@ The goal was not just to stand up the tools, but to prove detection coverage by 
 Demo
 (Optional: add a short GIF/clip here showing an alert firing live in Wazuh or Splunk — mirrors the Cowrie project's `demo.gif`. Not included yet — screen-record one detection firing and drop it in `screenshots/demo.gif`, then reference it below.)
 ```markdown
-![Demo](screenshots/demo.gif)
-*A simulated attack technique triggering a detection, captured live*
+!\\\[Demo](screenshots/demo.gif)
+\\\*A simulated attack technique triggering a detection, captured live\\\*
 ```
 Architecture
 ```mermaid
 flowchart TD
-    A[Atomic Red Team<br/>Attack Simulation] --> B[win-victim<br/>Windows 10 Pro<br/>192.168.50.128]
-    B -->|Sysmon telemetry| C[Wazuh Agent]
-    B -->|Sysmon telemetry| D[Splunk Universal Forwarder]
-    C -->|Port 1514| E[Wazuh Manager<br/>192.168.50.11]
-    D -->|Port 9997| F[Splunk Indexer<br/>192.168.50.10]
-    E --> G[Wazuh Dashboard<br/>Custom Detection Rules]
-    F --> H[Splunk Search<br/>Detection Searches]
+    A\\\[Atomic Red Team<br/>Attack Simulation] --> B\\\[win-victim<br/>Windows 10 Pro<br/>192.168.50.128]
+    B -->|Sysmon telemetry| C\\\[Wazuh Agent]
+    B -->|Sysmon telemetry| D\\\[Splunk Universal Forwarder]
+    C -->|Port 1514| E\\\[Wazuh Manager<br/>192.168.50.11]
+    D -->|Port 9997| F\\\[Splunk Indexer<br/>192.168.50.10]
+    E --> G\\\[Wazuh Dashboard<br/>Custom Detection Rules]
+    F --> H\\\[Splunk Search<br/>Detection Searches]
 
     style A fill:#e74c3c,color:#fff
     style B fill:#3498db,color:#fff
@@ -53,7 +51,7 @@ VM	OS	IP	Role
 What I Did
 Deployed Sysmon on the victim endpoint using the SwiftOnSecurity configuration for high-fidelity process, network, and registry telemetry
 Stood up Wazuh manager, indexer, and dashboard on a dedicated Ubuntu VM; connected and validated a Windows agent
-Wrote custom Wazuh detection rules (`wazuh-rules/local_rules.xml`) mapped to specific MITRE ATT&CK techniques: encoded PowerShell execution, LSASS memory access, and registry-based persistence
+Wrote custom Wazuh detection rules (`wazuh-rules/local\\\_rules.xml`) mapped to specific MITRE ATT&CK techniques: encoded PowerShell execution, LSASS memory access, and registry-based persistence
 Deployed Splunk Enterprise as a second, fully independent detection pipeline, running as a non-root service account
 Configured Splunk Universal Forwarder to monitor the Sysmon event log channel and forward to the indexer
 Diagnosed and resolved a subtle forwarding failure where data appeared to be transmitted (open TCP port, active metrics) but never indexed — root-caused to a Windows Access Denied error on the event log subscription
@@ -93,7 +91,7 @@ Clock drift silently hides data. Indexed events with correct data can be invisib
 PowerShell session state is not persistent. Execution policy bypasses and imported modules apply only to the session they were set in; every new terminal window requires re-running setup before Atomic Red Team commands work.
 Attack simulation frameworks will get flagged by AV, and that's expected. Rather than disabling endpoint protection to force every technique to execute, leaving two techniques as "blocked by Defender" and documenting why is a more honest and more useful result.
 Future Improvements
-Extend `local_rules.xml` with dedicated custom rules for LOLBins (T1218) and suspicious outbound connections (T1071), currently relying on Wazuh's default ruleset for those categories
+Extend `local\\\_rules.xml` with dedicated custom rules for LOLBins (T1218) and suspicious outbound connections (T1071), currently relying on Wazuh's default ruleset for those categories
 Add a scheduled/automated Atomic Red Team test runner instead of manual per-technique execution
 Build a Splunk dashboard visualizing detections across all five techniques on one pane
 Extend coverage to lateral movement and exfiltration techniques
