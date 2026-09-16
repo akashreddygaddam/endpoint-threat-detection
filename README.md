@@ -1,7 +1,8 @@
 <div align="center">
 
-# 🛡️ Endpoint Threat Detection Lab
-### Sysmon + Wazuh + Splunk
+# 🎯 Endpoint Threat Detection Lab
+
+**`SYSMON`** · **`WAZUH`** · **`SPLUNK`**
 
 ![Wazuh](https://img.shields.io/badge/Wazuh-v4.9.0-blue?style=flat-square)
 ![Splunk](https://img.shields.io/badge/Splunk-Enterprise-black?style=flat-square&logo=splunk&logoColor=white)
@@ -18,6 +19,7 @@
 
 - [Overview](#overview)
 - [Demo](#demo)
+- [Tech Stack](#tech-stack)
 - [Architecture](#architecture)
 - [Repository Structure](#repository-structure)
 - [Prerequisites](#prerequisites)
@@ -41,6 +43,22 @@ The goal was not just to stand up the tools, but to prove detection coverage by 
 ## Demo
 
 *Demo GIF coming soon — will show an alert firing live in Wazuh and Splunk.*
+
+## Tech Stack
+
+![PowerShell](https://img.shields.io/badge/PowerShell-5391FE?style=flat-square&logo=powershell&logoColor=white)
+![XML](https://img.shields.io/badge/XML-Wazuh%20Rules-yellow?style=flat-square&logo=xml&logoColor=white)
+![SPL](https://img.shields.io/badge/SPL-Splunk%20Search-black?style=flat-square)
+![Markdown](https://img.shields.io/badge/Markdown-000000?style=flat-square&logo=markdown&logoColor=white)
+![Mermaid](https://img.shields.io/badge/Mermaid-Diagrams-ff3670?style=flat-square&logo=mermaid&logoColor=white)
+
+| Layer | Language/Format | Where |
+|---|---|---|
+| Attack simulation | PowerShell | Atomic Red Team test execution |
+| Wazuh detection rules | XML | `wazuh-rules/local_rules.xml` |
+| Splunk detection rules | SPL (Search Processing Language) | `splunk-searches/` |
+| Documentation | Markdown | `README.md`, `docs/` |
+| Architecture diagram | Mermaid | Rendered inline in this README |
 
 ## Architecture
 
