@@ -1,0 +1,77 @@
+<!--
+  Custom Wazuh Detection Rules — Endpoint Threat Detection Lab
+  Place this file at: /var/ossec/etc/rules/local_rules.xml on the Wazuh manager
+
+  Rule ID range 100000-100099 is reserved for custom/local rules by Wazuh convention.
+  Adjust IDs if they conflict with rules you've already defined.
+
+  ⚠️ These are STARTER rules based on standard Sysmon event fields — test and tune
+  thresholds/patterns against your own Sysmon output before relying on them.
+-->
+
+<group name="local,endpoint_detection_lab,">
+
+  <!-- ============================================================ -->
+  <!-- T1059.001 — PowerShell Encoded Command Execution -->
+  <!-- ============================================================ -->
+  <rule id="100001" level="12">
+    <if_group>sysmon_event1</if_group>
+    <field name="win.eventdata.image" type="pcre2">(?i)powershell(_ise)?\.exe$</field>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)(-enc|-encodedcommand|-e )</field>
+    <description>PowerShell executed with an encoded/base64 command (T1059.001)</description>
+    <mitre>
+      <id>T1059.001</id>
+    </mitre>
+  </rule>
+
+  <!-- ============================================================ -->
+  <!-- T1547.001 — Registry Run Key Persistence -->
+  <!-- ============================================================ -->
+  <rule id="100002" level="10">
+    <if_group>sysmon_event13</if_group>
+    <field name="win.eventdata.targetObject" type="pcre2">(?i)\\(CurrentVersion\\Run|CurrentVersion\\RunOnce)\\</field>
+    <description>Registry Run/RunOnce key modified — possible persistence (T1547.001)</description>
+    <mitre>
+      <id>T1547.001</id>
+    </mitre>
+  </rule>
+
+  <!-- ============================================================ -->
+  <!-- T1003.001 — LSASS Memory Access (Credential Dumping) -->
+  <!-- ============================================================ -->
+  <rule id="100003" level="14">
+    <if_group>sysmon_event10</if_group>
+    <field name="win.eventdata.targetImage" type="pcre2">(?i)\\lsass\.exe$</field>
+    <field name="win.eventdata.grantedAccess" type="pcre2">0x1010|0x1410|0x143a|0x1438</field>
+    <description>Process requested suspicious access rights to LSASS — possible credential dumping (T1003.001)</description>
+    <mitre>
+      <id>T1003.001</id>
+    </mitre>
+  </rule>
+
+  <!-- ============================================================ -->
+  <!-- T1218.010 — Regsvr32 LOLBin Abuse -->
+  <!-- ============================================================ -->
+  <rule id="100004" level="12">
+    <if_group>sysmon_event1</if_group>
+    <field name="win.eventdata.image" type="pcre2">(?i)regsvr32\.exe$</field>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)(scrobj\.dll|/i:http|-s /u)</field>
+    <description>Regsvr32 used to execute a remote/local scriptlet — possible LOLBin abuse (T1218.010)</description>
+    <mitre>
+      <id>T1218.010</id>
+    </mitre>
+  </rule>
+
+  <!-- ============================================================ -->
+  <!-- T1071.001 — Suspicious Outbound / C2-style Network Connection -->
+  <!-- ============================================================ -->
+  <rule id="100005" level="10">
+    <if_group>sysmon_event3</if_group>
+    <field name="win.eventdata.destinationPort" type="pcre2">^(4444|8080|8443)$</field>
+    <description>Outbound connection to a commonly-abused C2 port (T1071.001) — tune port list to your environment</description>
+    <mitre>
+      <id>T1071.001</id>
+    </mitre>
+  </rule>
+
+</group>

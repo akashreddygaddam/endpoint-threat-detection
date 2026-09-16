@@ -1,0 +1,8 @@
+`comment("T1071.001 — Suspicious Outbound / C2-style Network Connection")`
+
+index=* sourcetype="XmlWinEventLog:Microsoft-Windows-Sysmon/Operational" EventCode=3
+    (DestinationPort=4444 OR DestinationPort=8080 OR DestinationPort=8443)
+| table _time, host, Image, SourceIp, DestinationIp, DestinationPort
+| sort -_time
+
+`comment("Tune the port list to whatever ports your specific Atomic Red Team test actually used")`

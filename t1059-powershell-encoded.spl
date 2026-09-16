@@ -1,0 +1,9 @@
+`comment("T1059.001 — PowerShell Encoded Command Execution")`
+
+index=* sourcetype="XmlWinEventLog:Microsoft-Windows-Sysmon/Operational" EventCode=1
+    Image="*powershell.exe" OR Image="*powershell_ise.exe"
+    (CommandLine="*-enc*" OR CommandLine="*-EncodedCommand*" OR CommandLine="*-e *")
+| table _time, host, User, Image, CommandLine, ParentImage
+| sort -_time
+
+`comment("Adjust index name to match your Splunk configuration (e.g. index=main or index=endpoint)")`
