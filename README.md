@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🎯 Endpoint Threat Detection Lab
+# 🎯 Endpoint Threat Detection
 
 **`SYSMON`** · **`WAZUH`** · **`SPLUNK`**
 
