@@ -1,202 +1,75 @@
-<div align="center">
-
-# 🎯 Endpoint Threat Detection
-
-**`SYSMON`** · **`WAZUH`** · **`SPLUNK`**
-
-![Wazuh](https://img.shields.io/badge/Wazuh-v4.9.0-blue?style=flat-square)
-![Splunk](https://img.shields.io/badge/Splunk-Enterprise-black?style=flat-square&logo=splunk&logoColor=white)
-![Sysmon](https://img.shields.io/badge/Sysmon-SwiftOnSecurity-orange?style=flat-square)
-![OS](https://img.shields.io/badge/OS-Windows%2010%20%7C%20Ubuntu%2024.04-lightgrey?style=flat-square)
-![Status](https://img.shields.io/badge/Status-Complete-brightgreen?style=flat-square)
-![License](https://img.shields.io/badge/License-Educational-lightgrey?style=flat-square)
-
-</div>
-
----
-
-## Table of Contents
-
-- [Overview](#overview)
-- [Demo](#demo)
-- [Tech Stack](#tech-stack)
-- [Architecture](#architecture)
-- [Repository Structure](#repository-structure)
-- [Prerequisites](#prerequisites)
-- [What I Did](#what-i-did)
-- [Skills Demonstrated](#skills-demonstrated)
-- [Detection Rules](#detection-rules)
-- [Attack Simulation Results](#attack-simulation-results)
-- [Key Findings](#key-findings)
-- [Screenshots](#screenshots)
-- [Challenges & Lessons Learned](#challenges--lessons-learned)
-- [Future Improvements](#future-improvements)
-- [Tools Used](#tools-used)
-- [References](#references)
-
-## Overview
-
-A three-tier home-lab SOC environment built to practice endpoint detection engineering end-to-end: instrumenting a Windows victim host with Sysmon, forwarding telemetry into two independent detection stacks (Wazuh and Splunk), writing custom detection rules, and validating them against real MITRE ATT&CK-mapped attack simulations using Atomic Red Team.
-
-The goal was not just to stand up the tools, but to prove detection coverage by actually attacking the endpoint and confirming the alerts fire — including documenting the cases where they don't (Windows Defender intercepting two techniques before the SIEM layer ever saw them).
-
-## Tech Stack
-
-![PowerShell](https://img.shields.io/badge/PowerShell-5391FE?style=flat-square&logo=powershell&logoColor=white)
-![XML](https://img.shields.io/badge/XML-Wazuh%20Rules-yellow?style=flat-square&logo=xml&logoColor=white)
-![SPL](https://img.shields.io/badge/SPL-Splunk%20Search-black?style=flat-square)
-![Markdown](https://img.shields.io/badge/Markdown-000000?style=flat-square&logo=markdown&logoColor=white)
-![Mermaid](https://img.shields.io/badge/Mermaid-Diagrams-ff3670?style=flat-square&logo=mermaid&logoColor=white)
-
-| Layer | Language/Format | Where |
-|---|---|---|
-| Attack simulation | PowerShell | Atomic Red Team test execution |
-| Wazuh detection rules | XML | `wazuh-rules/local_rules.xml` |
-| Splunk detection rules | SPL (Search Processing Language) | `splunk-searches/` |
-| Documentation | Markdown | `README.md`, `docs/` |
-| Architecture diagram | Mermaid | Rendered inline in this README |
-
-## Architecture
-
+Endpoint Threat Detection & Validation Lab
+Sysmon · Wazuh · Splunk · Atomic Red Team · MITRE ATT&CK
+A hands-on endpoint detection engineering lab that collects Windows endpoint telemetry with Sysmon, forwards it to two independent SIEM platforms (Wazuh and Splunk), and validates detection coverage using controlled, MITRE ATT&CK-mapped simulations with Atomic Red Team.
+> \*\*Lab scope:\*\* This repository documents a three-VM VMware home lab: a Windows endpoint, a Wazuh server, and a Splunk server. Attack simulations are performed only in an isolated, authorized environment. Results below reflect the tests documented in this repository; they are not a claim of complete coverage.
+At a glance
+Area	Implementation
+Endpoint telemetry	Sysmon on Windows
+SIEM pipeline 1	Wazuh agent, manager, custom XML rules
+SIEM pipeline 2	Splunk Universal Forwarder, Splunk Enterprise, SPL searches
+Adversary simulation	Atomic Red Team
+Detection mapping	MITRE ATT&CK
+Lab virtualization	VMware Workstation
+Documentation	Architecture, setup notes, simulation log, screenshots
+Architecture
 ```mermaid
 flowchart TD
-    A[Atomic Red Team<br/>Attack Simulation] --> B[win-victim<br/>Windows 10 Pro<br/>192.168.50.128]
-    B -->|Sysmon telemetry| C[Wazuh Agent]
-    B -->|Sysmon telemetry| D[Splunk Universal Forwarder]
-    C -->|Port 1514| E[Wazuh Manager<br/>192.168.50.11]
-    D -->|Port 9997| F[Splunk Indexer<br/>192.168.50.10]
-    E --> G[Wazuh Dashboard<br/>Custom Detection Rules]
-    F --> H[Splunk Search<br/>Detection Searches]
-
-    style A fill:#e74c3c,color:#fff
-    style B fill:#3498db,color:#fff
-    style E fill:#2ecc71,color:#fff
-    style F fill:#000,color:#fff
+    A\[Atomic Red Team] --> B\[Windows endpoint]
+    B -->|Sysmon events| C\[Wazuh Agent]
+    B -->|Sysmon events| D\[Splunk Universal Forwarder]
+    C --> E\[Wazuh Manager and Dashboard]
+    D --> F\[Splunk Enterprise]
+    E --> G\[Wazuh custom detection rules]
+    F --> H\[Splunk SPL detections]
 ```
-
-Three VMware Workstation VMs on an isolated host-only network (`VMnet2`, subnet `192.168.50.0/24`), with internet egress via a gateway for tooling and updates.
-
-| VM | OS | IP | Role |
-|---|---|---|---|
-| `win-victim` | Windows 10 Pro | `192.168.50.128` | Instrumented endpoint — Sysmon, Wazuh agent, Splunk Universal Forwarder |
-| `wazuh-manager` | Ubuntu 24.04 | `192.168.50.11` | Wazuh manager, indexer, dashboard |
-| `splunk-server` | Ubuntu 24.04 | `192.168.50.10` | Splunk Enterprise indexer + search head |
-
-> The Wazuh agent registers under the actual Windows hostname `DESKTOP-5BMPUDK`, not the VM label `win-victim` — both refer to the same host.
-
-## Repository Structure
-
-```
-endpoint-detection-lab/
-├── docs/              # Detailed write-ups (attack simulation log, etc.)
-├── screenshots/        # Evidence organized by stage/technique
-├── splunk-searches/     # Detection SPL queries
-├── wazuh-rules/        # Custom Wazuh detection rules (local_rules.xml)
-├── LICENSE
-└── README.md
-```
-
-## Prerequisites
-
-To rebuild this lab, you'll need:
-
-- VMware Workstation (or another hypervisor capable of host-only networking)
-- A Windows 10 Pro ISO for the victim endpoint
-- Ubuntu Server 24.04 ISOs for the Wazuh manager and Splunk server VMs
-- [Sysmon](https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon) with the [SwiftOnSecurity config](https://github.com/SwiftOnSecurity/sysmon-config)
-- Wazuh 4.9.0 (manager + agent)
-- Splunk Enterprise and a Splunk Universal Forwarder license/install
-- [Atomic Red Team](https://github.com/redcanaryco/atomic-red-team) for attack simulation
-
-## What I Did
-
-- Deployed Sysmon on the victim endpoint using the SwiftOnSecurity configuration for high-fidelity process, network, and registry telemetry
-- Stood up Wazuh manager, indexer, and dashboard on a dedicated Ubuntu VM; connected and validated a Windows agent
-- Wrote custom Wazuh detection rules (`wazuh-rules/local_rules.xml`) mapped to specific MITRE ATT&CK techniques: encoded PowerShell execution, LSASS memory access, and registry-based persistence
-- Deployed Splunk Enterprise as a second, fully independent detection pipeline, running as a non-root service account
-- Configured Splunk Universal Forwarder to monitor the Sysmon event log channel and forward to the indexer
-- Diagnosed and resolved a subtle forwarding failure where data appeared to be transmitted (open TCP port, active metrics) but never indexed — root-caused to a Windows Access Denied error on the event log subscription
-- Simulated five MITRE ATT&CK techniques using Atomic Red Team and independently validated detections in both Wazuh and Splunk
-- Documented two techniques that were blocked by Windows Defender's signature detection before ever reaching the SIEM layer — a legitimate defense-in-depth finding, not a gap in the lab
-
-## Skills Demonstrated
-
-Windows and Linux system administration, SIEM deployment and tuning (Wazuh + Splunk), Sysmon telemetry engineering, custom detection rule writing (XML/regex, MITRE ATT&CK mapping), Splunk SPL query authoring, adversary emulation with Atomic Red Team, network troubleshooting (TCP forwarding, Windows event log permissions, clock synchronization), and systematic root-cause debugging under ambiguous symptoms.
-
-## Detection Rules
-
-Custom detection logic lives in two places, one per stack:
-
-- **`wazuh-rules/local_rules.xml`** — custom Wazuh rules mapped to MITRE ATT&CK techniques (encoded PowerShell execution, LSASS memory access, registry-based persistence)
-- **`splunk-searches/`** — SPL detection searches covering the same technique set, run against Sysmon-sourced indexes
-
-Both stacks were built and tuned independently so that a detection gap in one wouldn't be masked by the other — see [Attack Simulation Results](#attack-simulation-results) for how each rule set performed against live technique execution.
-
-## Attack Simulation Results
-
-| # | Technique | Test | Result | Detected In |
-|---|---|---|---|---|
-| 1 | T1059.001 — PowerShell (Encoded Command) | Manual base64 `-EncodedCommand` execution | Success | Splunk + Wazuh |
-| 2 | T1547.001 — Registry Run Key Persistence | Atomic Test #1 | Success, exit code 0 | Splunk + Wazuh |
-| 3 | T1218.010 — Regsvr32 (LOLBin) | Atomic Test #1 | Blocked by Windows Defender pre-execution | N/A |
-| 4 | T1003.001 — LSASS Memory (Mimikatz) | Atomic Test #1 | Blocked by Windows Defender pre-execution | N/A |
-| 5 | T1071.001 — Malicious User Agent / C2-style traffic | Atomic Test #1 | Success, exit code 0 | Splunk + Wazuh |
-
-Full write-up with timestamps and raw evidence: [docs/attack-simulation-log.md](docs/attack-simulation-log.md)
-
-## Key Findings
-
-Three of five simulated techniques executed successfully and were independently confirmed in both detection stacks, validating the full telemetry pipeline from Sysmon through two separate forwarding mechanisms into two separate SIEMs. The remaining two techniques (Mimikatz-based credential dumping and a Regsvr32 COM-scriptlet LOLBin) were intercepted by Windows Defender's real-time signature detection before Sysmon or either SIEM observed any activity — confirmed via `Get-MpThreatDetection`, which showed genuine malware classifications (`Trojan:Win64/Phave.MK`, `HackTool:Win32/PortMon!AMTB`) against the downloaded atomics payloads.
-
-This is a meaningful result on its own: it demonstrates defense-in-depth, where endpoint AV catches known-malicious tooling upstream of the SIEM layer entirely. It also identifies a real blind spot — if Defender were ever disabled, misconfigured, or bypassed (a common real-world adversary TTP), detection for those two techniques would depend entirely on the Sysmon/Wazuh/Splunk layer, which was never actually exercised in this run.
-
-## Screenshots
-
-**Troubleshooting the Splunk forwarding failure** — full arc from an apparently-successful TCP connection through root cause to fix:
-
-![Root cause](screenshots/01-troubleshooting-splunk-forwarding/04-root-cause-access-denied-errorcode5.png)
-*Access Denied (errorCode=5) on the Sysmon WinEventLog subscription — the actual root cause, despite the forwarder showing an active TCP connection*
-
-![Fix confirmed](screenshots/01-troubleshooting-splunk-forwarding/06-success-14405-events-indexed.png)
-*14,405 Sysmon events successfully indexed after switching the forwarder service to LocalSystem*
-
-**Technique detections:**
-
-![T1547 detection](screenshots/03-technique-t1547-registry-persistence/02-splunk-detection.png)
-*Registry Run key persistence test detected in Splunk*
-
-![Defender blocked](screenshots/04-technique-t1218-t1003-defender-blocked/02-defender-threat-detections-log.png)
-*Windows Defender threat detection log showing real malware classifications against Atomic Red Team payloads*
-
-![T1071 detection](screenshots/05-technique-t1071-outbound-connection/02-splunk-network-events.png)
-*Suspicious outbound connection activity captured in Splunk*
-
-Full set of screenshots organized by stage: [screenshots/](screenshots/)
-
-## Challenges & Lessons Learned
-
-- **A healthy-looking TCP connection is not proof of a working pipeline.** The Splunk forwarder showed a stable, repeatedly-reconnecting TCP session to the indexer with active throughput in `metrics.log`, yet zero events landed in any index. The actual failure was one layer up — the forwarder's `WinEventLog` modular input was failing to subscribe to the Sysmon channel with a Windows Access Denied error, because Sysmon's event log channel requires explicit read permissions that the forwarder's default service account didn't have.
-- **Agent naming assumptions can waste real debugging time.** Wazuh registers agents by Windows hostname, not by any label used elsewhere (like a VM name in VMware Workstation). Searching for the "wrong" name looked identical to the agent being disconnected.
-- **Clock drift silently hides data.** Indexed events with correct data can be invisible under default relative search windows if the collecting host's clock has drifted from the indexer's clock — worth checking "All time" before assuming a pipeline is broken.
-- **PowerShell session state is not persistent.** Execution policy bypasses and imported modules apply only to the session they were set in; every new terminal window requires re-running setup before Atomic Red Team commands work.
-- **Attack simulation frameworks will get flagged by AV, and that's expected.** Rather than disabling endpoint protection to force every technique to execute, leaving two techniques as "blocked by Defender" and documenting why is a more honest and more useful result.
-
-## Future Improvements
-
-- Extend `local_rules.xml` with dedicated custom rules for LOLBins (T1218) and suspicious outbound connections (T1071), currently relying on Wazuh's default ruleset for those categories
-- Add a scheduled/automated Atomic Red Team test runner instead of manual per-technique execution
-- Build a Splunk dashboard visualizing detections across all five techniques on one pane
-- Extend coverage to lateral movement and exfiltration techniques
-- Script the full environment build (Vagrant/Ansible) for one-command lab reset
-
-## Tools Used
-
-Sysmon (SwiftOnSecurity config), Wazuh 4.9.0, Splunk Enterprise, Splunk Universal Forwarder, Atomic Red Team, VMware Workstation, Windows 10 Pro, Ubuntu Server 24.04, PowerShell
-
-## References
-
-- [MITRE ATT&CK](https://attack.mitre.org/)
-- [Atomic Red Team](https://github.com/redcanaryco/atomic-red-team)
-- [Sysmon (SwiftOnSecurity config)](https://github.com/SwiftOnSecurity/sysmon-config)
-- [Wazuh Documentation](https://documentation.wazuh.com/)
-- [Splunk Documentation](https://docs.splunk.com/)
+The lab uses three virtual machines on an isolated host-only network. Replace any environment-specific hostnames and addresses in public documentation with generic labels before publishing.
+Repository contents
+`docs/` — architecture and technical write-ups.
+`screenshots/` — visual evidence from the lab.
+`wazuh-rules/` and `local\_rules.xml` — custom Wazuh detection logic.
+`splunk-searches/` and root-level `.spl` files — Splunk detection searches.
+`attack-simulation-log.md` — recorded test procedures and outcomes.
+Detection validation summary
+The current documented test set covers five ATT&CK technique scenarios:
+Technique	Scenario	Documented outcome
+T1059.001	Encoded PowerShell command	Detected by Wazuh and Splunk
+T1547.001	Registry Run Key persistence	Detected by Wazuh and Splunk
+T1218.010	Regsvr32	Blocked by Windows Defender before SIEM validation
+T1003.001	LSASS memory access	Blocked by Windows Defender before SIEM validation
+T1071.001	User-agent / outbound traffic behavior	Detected by Wazuh and Splunk
+Interpretation: Three scenarios were reported as successfully executed and detected by both SIEM stacks. Two were blocked by Windows Defender before the SIEM pipeline could observe the behavior. Those two are prevention outcomes, not successful SIEM detections. See `attack-simulation-log.md` for the detailed evidence and caveats.
+Key engineering work documented
+Instrumented a Windows endpoint with Sysmon telemetry.
+Configured Wazuh and Splunk as independent event ingestion and detection paths.
+Authored custom Wazuh XML rules and Splunk SPL searches for selected endpoint behaviors.
+Investigated a Splunk forwarding issue involving Windows event-log access permissions.
+Documented agent naming and time-synchronization troubleshooting.
+Used Atomic Red Team for controlled technique validation and recorded cases where endpoint protection blocked execution.
+Reproduce the lab
+See the existing setup documentation in `docs/` and the simulation record before rebuilding or running tests.
+Build an isolated virtual network and the three lab VMs.
+Configure Sysmon and confirm events are visible locally.
+Install and enroll the Wazuh agent; verify events at the manager.
+Configure the Splunk Universal Forwarder; verify events are indexed.
+Review each detection rule and its expected telemetry.
+Snapshot the endpoint before each Atomic Red Team test.
+Run one authorized test at a time, capture SIEM evidence, perform cleanup, and revert if needed.
+Do not disable endpoint protection simply to force a test to execute. Record prevention events accurately.
+Contributions and attribution
+This repository presents the lab implementation and technical work documented by its owner, including environment configuration, telemetry forwarding, detection-rule authoring, troubleshooting, simulation validation, and documentation. Third-party tools, configurations, and Atomic Red Team test definitions remain the work of their respective authors and retain their licenses and attribution.
+For a precise contribution record, distinguish work personally implemented and tested from third-party tools/configurations used as dependencies. Do not claim a test, detection, dashboard, or deployment unless the repository contains evidence that it was completed.
+Roadmap
+[ ] Add a single-page detection coverage matrix linking each rule to event IDs, ATT&CK technique, and validation evidence.
+[ ] Add dedicated Wazuh detections for LOLBin and outbound-connection scenarios, then validate them.
+[ ] Build a Splunk dashboard showing the five test scenarios and detection status.
+[ ] Add sanitized screenshots with captions, test date, and environment details.
+[ ] Add a repeatable lab build and reset procedure.
+[ ] Add CI checks for documentation and rule-file formatting.
+Safety
+Run simulations only on systems you own or are explicitly authorized to test. Use isolated VMs, snapshots, test-by-test execution, and documented cleanup. Never commit credentials, tokens, personal data, or sensitive production logs.
+References
+Atomic Red Team
+MITRE ATT&CK
+Microsoft Sysmon
+Wazuh documentation
+Splunk documentation

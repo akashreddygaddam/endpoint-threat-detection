@@ -44,3 +44,38 @@ AV-blocked techniques (2/5): Windows Defender's signature-based detection interc
 
 \- PowerShell session state does not persist: Set-ExecutionPolicy -Scope Process and imported modules only apply to the session they were run in. Every new PowerShell window requires re-running the execution policy bypass and module import.
 
+# Project contribution record
+
+This file summarizes the work described in the repository. Keep the wording aligned with what you personally performed and can demonstrate.
+
+## Lab engineering
+
+* Set up a three-VM VMware lab consisting of a Windows endpoint, Wazuh server, and Splunk server.
+* Configured Sysmon telemetry collection on the Windows endpoint.
+* Configured Wazuh agent-to-manager event forwarding.
+* Configured Splunk Universal Forwarder-to-Splunk Enterprise event forwarding.
+
+## Detection engineering
+
+* Authored custom Wazuh XML rules for selected endpoint behaviors.
+* Authored Splunk SPL searches for corresponding telemetry.
+* Mapped detection scenarios to MITRE ATT\&CK techniques.
+
+## Validation and troubleshooting
+
+* Used Atomic Red Team for controlled test scenarios.
+* Validated three scenarios as detected by both Wazuh and Splunk, according to the current simulation record.
+* Documented two scenarios blocked by Windows Defender before SIEM-level validation.
+* Investigated and resolved a Windows event-log access issue affecting Splunk forwarding.
+* Documented troubleshooting around agent identity and time synchronization.
+
+## Documentation and evidence
+
+* Maintained architecture and setup documentation.
+* Recorded attack-simulation outcomes and limitations.
+* Organized screenshots and technical findings.
+
+## Attribution boundary
+
+Sysmon, Wazuh, Splunk, VMware, MITRE ATT\&CK, Atomic Red Team, and any third-party Sysmon configuration are external tools/resources. Their maintainers retain ownership and applicable licenses. This project claims the owner's lab integration, custom rules/searches, validation work, troubleshooting, and documentation—not authorship of those external projects.
+
