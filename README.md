@@ -25,8 +25,9 @@ flowchart TD
     E --> G["Splunk Enterprise"]
     F --> H["Wazuh Detection Rules"]
     G --> I["Splunk SPL Searches"]
-` ``` `
-The lab uses three virtual machines on an isolated host-only network. Replace any environment-specific hostnames and addresses in public documentation with generic labels before publishing.
+```
+
+The lab uses three virtual machines on an isolated host-only network. Attack simulations are performed only in an authorized environment.
 
 ## Repository Structure
 
