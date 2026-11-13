@@ -1,5 +1,11 @@
 # Endpoint Threat Detection & Validation Lab
-Sysmon · Wazuh · Splunk · Atomic Red Team · MITRE ATT&CK
+<p align="center">
+  <strong>⚙️ Sysmon</strong> &nbsp;•&nbsp;
+  <strong>🛡️ Wazuh</strong> &nbsp;•&nbsp;
+  <strong>📊 Splunk</strong> &nbsp;•&nbsp;
+  <strong>⚔️ Atomic Red Team</strong> &nbsp;•&nbsp;
+  <strong>🎯 MITRE ATT&CK</strong>
+</p>
 A hands-on endpoint detection engineering lab that collects Windows endpoint telemetry with Sysmon, forwards it to two independent SIEM platforms (Wazuh and Splunk), and validates detection coverage using controlled, MITRE ATT&CK-mapped simulations with Atomic Red Team.
 > **Lab Scope:** This repository documents a three-VM VMware home lab consisting of a Windows endpoint, a Wazuh server, and a Splunk server. Attack simulations are performed only in an isolated, authorized environment. Results reflect the tests documented in this repository and do not claim complete detection coverage.
 ## At a Glance
