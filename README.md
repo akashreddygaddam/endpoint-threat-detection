@@ -44,7 +44,7 @@ The lab uses three virtual machines on an isolated host-only network. Attack sim
 | `screenshots/` | Visual evidence from the lab |
 | `wazuh-rules/` | Custom Wazuh detection rules |
 | `splunk-searches/` | Splunk SPL detection searches |
-| `attack-simulation/` | Attack simulation procedures and results |
+| `attack-simulation-log.md` | Attack simulation procedures and results |
 | `LICENSE` | MIT License |
 ## Detection Validation Results
 
@@ -64,7 +64,7 @@ Five MITRE ATT&CK technique scenarios were documented during lab validation.
 - **2 scenarios:** Blocked by Windows Defender before reaching SIEM validation.
 - **Detection coverage:** Results reflect documented tests only, not complete detection coverage.
 
-See [Attack Simulation Log](attack-simulation/attack-simulation-log.md) for detailed test procedures and results.
+See [Attack Simulation Log](attack-simulation-log.md) for detailed test procedures and results.
 ## Key Engineering Contributions
 
 - Configured Sysmon for Windows endpoint telemetry collection.
