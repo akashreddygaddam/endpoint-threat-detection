@@ -84,12 +84,13 @@ See [Attack Simulation Log](attack-simulation/attack-simulation-log.md) for deta
 This repository presents the lab implementation and technical work documented by its owner, including environment configuration, telemetry forwarding, detection-rule authoring, troubleshooting, simulation validation, and documentation. Third-party tools, configurations, and Atomic Red Team test definitions remain the work of their respective authors and retain their licenses and attribution.
 For a precise contribution record, distinguish work personally implemented and tested from third-party tools/configurations used as dependencies. Do not claim a test, detection, dashboard, or deployment unless the repository contains evidence that it was completed.
 ## Roadmap
-[ ] Add a single-page detection coverage matrix linking each rule to event IDs, ATT&CK technique, and validation evidence.
-[ ] Add dedicated Wazuh detections for LOLBin and outbound-connection scenarios, then validate them.
-[ ] Build a Splunk dashboard showing the five test scenarios and detection status.
-[ ] Add sanitized screenshots with captions, test date, and environment details.
-[ ] Add a repeatable lab build and reset procedure.
-[ ] Add CI checks for documentation and rule-file formatting.
+
+- [ ] Create a detection coverage matrix mapping rules to MITRE ATT&CK techniques.
+- [ ] Add dedicated Wazuh detections for additional attack scenarios.
+- [ ] Build a Splunk dashboard for detection monitoring.
+- [ ] Add sanitized screenshots with captions and test details.
+- [ ] Document a repeatable lab build and reset procedure.
+- [ ] Add CI checks for documentation and rule-file formatting.
 ## Safety
 Run simulations only on systems you own or are explicitly authorized to test. Use isolated VMs, snapshots, test-by-test execution, and documented cleanup. Never commit credentials, tokens, personal data, or sensitive production logs.
 ## References
