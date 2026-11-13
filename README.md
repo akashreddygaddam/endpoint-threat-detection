@@ -1,4 +1,4 @@
-# 🛡️ Endpoint Threat Detection & Validation Lab
+=# 🛡️ Endpoint Threat Detection & Validation Lab
 
 <p align="center">
   <strong>⚙️ Sysmon</strong> &nbsp;•&nbsp;
@@ -88,8 +88,11 @@ See [Attack Simulation Log](attack-simulation-log.md) for detailed test procedur
 10. Restore the lab environment after testing.
 
 ## Contributions and attribution
-This repository presents the lab implementation and technical work documented by its owner, including environment configuration, telemetry forwarding, detection-rule authoring, troubleshooting, simulation validation, and documentation. Third-party tools, configurations, and Atomic Red Team test definitions remain the work of their respective authors and retain their licenses and attribution.
-For a precise contribution record, distinguish work personally implemented and tested from third-party tools/configurations used as dependencies. Do not claim a test, detection, dashboard, or deployment unless the repository contains evidence that it was completed.
+This repository documents an endpoint threat detection and validation lab integrating Sysmon, Wazuh, Splunk, Atomic Red Team, and MITRE ATT&CK.
+
+The repository includes lab architecture, detection rules, SPL searches, attack simulation documentation, and validation results. Third-party tools, configurations, and test definitions remain the property of their respective authors and are subject to their original licenses.
+
+This repository is intended for educational and cybersecurity portfolio purposes. Documented results represent the test evidence included in this repository.
 ## Roadmap
 
 - [ ] Create a detection coverage matrix mapping rules to MITRE ATT&CK techniques.
