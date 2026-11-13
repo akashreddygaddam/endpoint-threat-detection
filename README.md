@@ -62,9 +62,6 @@ Five MITRE ATT&CK technique scenarios were documented during lab validation.
 
 - **3 scenarios:** Detected by both Wazuh and Splunk.
 - **2 scenarios:** Blocked by Windows Defender before reaching SIEM validation.
-- **Detection coverage:** Results reflect documented tests only, not complete detection coverage.
-
-See [Attack Simulation Log](attack-simulation-log.md) for detailed test procedures and results.
 ## Key Engineering Contributions
 
 - Configured Sysmon for Windows endpoint telemetry collection.
