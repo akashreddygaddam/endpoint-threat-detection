@@ -14,18 +14,22 @@ A hands-on endpoint detection engineering lab that collects Windows endpoint tel
 | Lab Virtualization | VMware Workstation |
 | Documentation | Architecture, setup notes, simulation logs, screenshots |
 ## Architecture
+
 ```mermaid
 flowchart TD
-        A[Atomic Red Team] --> B[Windows Endpoint]
-    B -->|Sysmon Events| C[Wazuh Agent]
-    B -->|Sysmon Events| D[Splunk Universal Forwarder]
-    C --> E[Wazuh Manager]
-    D --> F[Splunk Enterprise]
-    E --> G[Wazuh Custom Detection Rules]
-    F --> H[Splunk SPL Detection Searches]
+    A["Atomic Red Team"] --> B["Windows Endpoint"]
+    B --> C["Sysmon Telemetry"]
+    C --> D["Wazuh Agent"]
+    C --> E["Splunk Universal Forwarder"]
+    D --> F["Wazuh Manager"]
+    E --> G["Splunk Enterprise"]
+    F --> H["Wazuh Detection Rules"]
+    G --> I["Splunk SPL Searches"]
 ` ``` `
 The lab uses three virtual machines on an isolated host-only network. Replace any environment-specific hostnames and addresses in public documentation with generic labels before publishing.
+
 ## Repository Structure
+
 | Directory / File | Description |
 |---|---|
 | `docs/` | Architecture and technical documentation |
