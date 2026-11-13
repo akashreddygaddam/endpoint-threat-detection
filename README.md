@@ -1,4 +1,4 @@
-# Endpoint Threat Detection & Validation Lab
+🛡️ Endpoint Threat Detection & Validation Lab
 <p align="center">
   <strong>⚙️ Sysmon</strong> &nbsp;•&nbsp;
   <strong>🛡️ Wazuh</strong> &nbsp;•&nbsp;
